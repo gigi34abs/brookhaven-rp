@@ -8,7 +8,7 @@ import aiohttp
 
 # --- CONFIGURATION FIXE (Modifie ces valeurs si nécessaire) ---
 # Chemin vers ton image de base (template) sur GitHub. Renomme ton image template.jpg.
-TEMPLATE_PATH = "template.jpg"
+TEMPLATE_PATH = "Permis_de_conduire.png"
 # L'ID du rôle Discord autorisé à utiliser la commande d'enregistrement.
 ROLE_ID_AUTORISE = 1221424452428890133
 # Le pseudo exact de l'utilisateur autorisé (sans le hashtag ni l'ID).
