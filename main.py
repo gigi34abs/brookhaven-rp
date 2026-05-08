@@ -1,57 +1,36 @@
 import discord
 from discord.ext import commands
 import os
-# Tu n'auras pas besoin de python-dotenv sur Railway, 
-# car Railway gère les variables d'environnement directement.
-# Mais pour tester chez toi, c'est utile.
 from dotenv import load_dotenv
 
-# On importe les groupes de commandes et la commande simple depuis le fichier permis.py
-from permis import PermisGroup, voir_permis
+# ON IMPORTE LES NOUVEAUX NOMS DE LA VERSION VRAI VIE
+from permis import service_pref_instance, citoyen_cmd_instance
 
-# Chargement du Token (si présent localement dans un .env)
 load_dotenv()
 TOKEN = os.getenv('TOKEN')
 
-# --- CONFIGURATION DU BOT ---
-# On définit une classe personnalisée pour le bot pour gérer proprement la synchronisation des commandes slash.
 class MyBot(commands.Bot):
     def __init__(self):
-        # Définition des "Intents" (permissions) nécessaires.
-        # intents.members = True est requis pour interagir avec les membres du serveur (@mentions).
         intents = discord.Intents.default()
         intents.members = True
-        
-        # On appelle le constructeur de la classe parente.
+        intents.message_content = True
         super().__init__(command_prefix="!", intents=intents)
 
-    # Cette méthode est appelée une fois que le bot est connecté à Discord.
     async def setup_hook(self):
-        # 1. Ajout du groupe de commandes structuré (/permis enregistrer, etc.).
-        self.tree.add_command(PermisGroup())
+        # 1. On ajoute les services de la préfecture (/permis delivrer, etc.)
+        self.tree.add_command(service_pref_instance)
         
-        # 2. Ajout de la commande simple publique (/permis).
-        self.tree.add_command(voir_permis)
+        # 2. On ajoute la commande portefeuille (/portefeuille)
+        self.tree.add_command(citoyen_cmd_instance)
         
-        # 3. Synchronisation des commandes slash avec l'API Discord.
-        # Cela les rendra visibles et utilisables dans l'interface Discord.
         await self.tree.sync()
-        print("✅ Système de permis chargé et synchronisé avec succès.")
+        print("✅ Système administratif de la Préfecture synchronisé !")
 
-# Instanciation du bot personnalisé.
 bot = MyBot()
 
-# Événement déclenché lorsque le bot est prêt et en ligne.
 @bot.event
 async def on_ready():
-    print(f"🚀 Bot en ligne en tant que : {bot.user.name} (ID: {bot.user.id})")
-    print("------")
+    print(f"🚀 Préfecture de Brookhaven en ligne : {bot.user.name}")
 
-# Point d'entrée principal pour lancer le bot.
 if __name__ == "__main__":
-    if TOKEN:
-        # Lancement du bot avec le token récupéré.
-        bot.run(TOKEN)
-    else:
-        # Message d'erreur critique si le token est manquant.
-        print("ERREUR CRITIQUE : Le TOKEN n'a pas été trouvé dans les variables d'environnement !")
+    bot.run(TOKEN)
